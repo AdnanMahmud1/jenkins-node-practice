@@ -1,0 +1,32 @@
+---
+
+services:
+  jenkins:
+    image: jenkins/jenkins:lts
+    container_name: jenkins
+    restart: on-failure
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    volumes:
+      # Use a named volume for Jenkins data
+      - jenkins_home:/var/jenkins_home
+    deploy:
+      resources:
+        limits:
+          memory: 2g  # Allocate 2 GB of memory
+        reservations:
+          memory: 1g  # Reserve 1 GB of memory
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"  # Limit log size to 10 MB
+        max-file: "3"    # Retain up to 3 log files
+
+volumes:
+  jenkins_home:
+    driver: local
+    driver_opts:
+      type: "none"
+      device: "jenkins_home"  # Replace with your desired host path
+      o: "bind"
